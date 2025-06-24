@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import time
 import autopy
+import pyautogui
 from hand_detector import HandDetector
 
 class VirtualMouseController:
@@ -45,3 +46,36 @@ class VirtualMouseController:
                     (255, 0, 255),
                     2
                 )
+                # Index only (mouse move)
+                if fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 0:
+                    mapped_x = np.interp(index_finger_x, (self.frame_reduction, self.camera_width - self.frame_reduction), (0, self.screen_width))
+                    mapped_y = np.interp(index_finger_y, (self.frame_reduction, self.camera_height - self.frame_reduction), (0, self.screen_height))
+
+                    self.current_location_x = self.previous_location_x + (mapped_x - self.previous_location_x) / self.smoothing
+                    self.current_location_y = self.previous_location_y + (mapped_y - self.previous_location_y) / self.smoothing
+
+                    autopy.mouse.move(self.screen_width - self.current_location_x, self.current_location_y)
+                    cv2.circle(image, (index_finger_x, index_finger_y), 15, (255, 0, 255), cv2.FILLED)
+
+                    self.previous_location_x = self.current_location_x
+                    self.previous_location_y = self.current_location_y
+
+                # Index + thumb (click)
+                if fingers[1] == 1 and fingers.count(1) == 1:
+                    autopy.mouse.click()
+                    time.sleep(0.3)
+
+                # Index + pinky (right click)
+                if fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 1:
+                    autopy.mouse.click(button=autopy.mouse.Button.RIGHT)
+                    time.sleep(0.3)
+
+                # All fingers open (scroll up)
+                if fingers == [0, 1, 1, 1, 1]:
+                    pyautogui.scroll(100)
+                    time.sleep(0.2)
+
+                # All fingers folded (scroll down)
+                if fingers == [1, 0, 0, 0, 0]:
+                    pyautogui.scroll(-100)
+                    time.sleep(0.2)
