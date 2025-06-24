@@ -79,3 +79,16 @@ class VirtualMouseController:
                 if fingers == [1, 0, 0, 0, 0]:
                     pyautogui.scroll(-100)
                     time.sleep(0.2)
+
+            current_time = time.time()
+            frames_per_second = 1 / (current_time - self.previous_time) if self.previous_time else 0
+            self.previous_time = current_time
+
+            cv2.putText(image, f"FPS: {int(frames_per_second)}", (20, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
+            cv2.imshow("Virtual Mouse", image)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        self.webcam.release()
+        cv2.destroyAllWindows()
