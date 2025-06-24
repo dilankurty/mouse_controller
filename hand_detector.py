@@ -68,3 +68,23 @@ class HandDetector:
 
         return self.landmark_list, bounding_box
 
+    def fingers_up(self):
+        fingers = []
+
+        if not self.landmark_list:
+            return fingers
+
+        # Thumb
+        if self.landmark_list[self.finger_tip_ids[0]][1] > self.landmark_list[self.finger_tip_ids[0] - 1][1]:
+            fingers.append(1)
+        else:
+            fingers.append(0)
+
+        # Other fingers
+        for tip_index in range(1, 5):
+            if self.landmark_list[self.finger_tip_ids[tip_index]][2] < self.landmark_list[self.finger_tip_ids[tip_index] - 2][2]:
+                fingers.append(1)
+            else:
+                fingers.append(0)
+
+        return fingers
