@@ -74,13 +74,11 @@ class HandDetector:
         if not self.landmark_list:
             return fingers
 
-        # Thumb
         if self.landmark_list[self.finger_tip_ids[0]][1] > self.landmark_list[self.finger_tip_ids[0] - 1][1]:
             fingers.append(1)
         else:
             fingers.append(0)
 
-        # Other fingers
         for tip_index in range(1, 5):
             if self.landmark_list[self.finger_tip_ids[tip_index]][2] < self.landmark_list[self.finger_tip_ids[tip_index] - 2][2]:
                 fingers.append(1)
@@ -101,5 +99,5 @@ class HandDetector:
             cv2.circle(image, (center_x, center_y), radius, (0, 0, 255), cv2.FILLED)
 
         distance = math.hypot(x2 - x1, y2 - y1)
-
+        
         return distance, image, [x1, y1, x2, y2, center_x, center_y]
