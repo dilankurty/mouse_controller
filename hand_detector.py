@@ -88,16 +88,16 @@ class HandDetector:
         return fingers
 
     def find_distance(self, index_1, index_2, image, draw=True, radius=15, thickness=3):
-        x1, y1 = self.landmark_list[index_1][1:]
-        x2, y2 = self.landmark_list[index_2][1:]
-        center_x, center_y = (x1 + x2) // 2, (y1 + y2) // 2
+        x_coord_1, y_coord_1 = self.landmark_list[index_1][1:]
+        x_coord_2, y_coord_2 = self.landmark_list[index_2][1:]
+        center_x, center_y = (x_coord_1 + x_coord_2) // 2, (y_coord_1 + y_coord_2) // 2
 
         if draw:
-            cv2.line(image, (x1, y1), (x2, y2), (255, 0, 255), thickness)
-            cv2.circle(image, (x1, y1), radius, (255, 0, 255), cv2.FILLED)
-            cv2.circle(image, (x2, y2), radius, (255, 0, 255), cv2.FILLED)
+            cv2.line(image, (x_coord_1, y_coord_1), (x_coord_2, y_coord_2), (255, 0, 255), thickness)
+            cv2.circle(image, (x_coord_1, y_coord_1), radius, (255, 0, 255), cv2.FILLED)
+            cv2.circle(image, (x_coord_1, y_coord_2), radius, (255, 0, 255), cv2.FILLED)
             cv2.circle(image, (center_x, center_y), radius, (0, 0, 255), cv2.FILLED)
 
-        distance = math.hypot(x2 - x1, y2 - y1)
+        distance = math.hypot(x_coord_2 - x_coord_1, y_coord_2 - y_coord_1)
         
-        return distance, image, [x1, y1, x2, y2, center_x, center_y]
+        return distance, image, [x_coord_1, y_coord_1, x_coord_2, y_coord_2, center_x, center_y]
