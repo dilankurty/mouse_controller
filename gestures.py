@@ -35,7 +35,7 @@ class MoveCursorGesture(BaseGesture):
 class ClickGesture(BaseGesture):
     def execute(self, image):
         autopy.mouse.click()
-        time.sleep(0.5)
+        time.sleep(0.3)
 
 
 class RightClickGesture(BaseGesture):
