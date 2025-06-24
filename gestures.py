@@ -30,3 +30,27 @@ class MoveCursorGesture(BaseGesture):
         current_y = self.prev_y + (mapped_y - self.prev_y) / self.smoothing
         autopy.mouse.move(self.screen_width - current_x, current_y)
         cv2.circle(image, (index_x, index_y), 15, (255, 0, 255), cv2.FILLED)
+        return current_x, current_y
+    
+class ClickGesture(BaseGesture):
+    def execute(self, image):
+        autopy.mouse.click()
+        time.sleep(0.3)
+
+
+class RightClickGesture(BaseGesture):
+    def execute(self, image):
+        autopy.mouse.click(button=autopy.mouse.Button.RIGHT)
+        time.sleep(0.3)
+
+
+class ScrollUpGesture(BaseGesture):
+    def execute(self, image):
+        pyautogui.scroll(100)
+        time.sleep(0.2)
+
+
+class ScrollDownGesture(BaseGesture):
+    def execute(self, image):
+        pyautogui.scroll(-100)
+        time.sleep(0.2)
