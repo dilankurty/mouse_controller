@@ -32,3 +32,39 @@ class HandDetector:
                         image, hand_landmarks, self.mediapipe_hands.HAND_CONNECTIONS
                     )
         return image
+
+    def find_positions(self, image, hand_index=0, draw=True):
+        x_coordinates = []
+        y_coordinates = []
+        bounding_box = []
+        self.landmark_list = []
+
+        if self.results.multi_hand_landmarks:
+            selected_hand = self.results.multi_hand_landmarks[hand_index]
+            image_height, image_width, _ = image.shape
+
+            for landmark_index, landmark in enumerate(selected_hand.landmark):
+                pixel_x = int(landmark.x * image_width)
+                pixel_y = int(landmark.y * image_height)
+                x_coordinates.append(pixel_x)
+                y_coordinates.append(pixel_y)
+                self.landmark_list.append([landmark_index, pixel_x, pixel_y])
+
+                if draw:
+                    cv2.circle(image, (pixel_x, pixel_y), 5, (255, 0, 255), cv2.FILLED)
+
+            x_min, x_max = min(x_coordinates), max(x_coordinates)
+            y_min, y_max = min(y_coordinates), max(y_coordinates)
+            bounding_box = x_min, y_min, x_max, y_max
+
+            if draw:
+                cv2.rectangle(
+                    image,
+                    (x_min - 20, y_min - 20),
+                    (x_max + 20, y_max + 20),
+                    (0, 255, 0),
+                    2
+                )
+
+        return self.landmark_list, bounding_box
+
