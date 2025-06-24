@@ -24,3 +24,24 @@ class VirtualMouseController:
 
         self.hand_detector = HandDetector(max_hands=1)
         self.screen_width, self.screen_height = autopy.screen.size()
+
+    def run(self):
+        while True:
+            success, image = self.webcam.read()
+            if not success:
+                continue
+
+            image = self.hand_detector.find_hands(image)
+            landmark_list, _ = self.hand_detector.find_positions(image)
+
+            if landmark_list:
+                index_finger_x, index_finger_y = landmark_list[8][1:]
+                fingers = self.hand_detector.fingers_up()
+
+                cv2.rectangle(
+                    image,
+                    (self.frame_reduction, self.frame_reduction),
+                    (self.camera_width - self.frame_reduction, self.camera_height - self.frame_reduction),
+                    (255, 0, 255),
+                    2
+                )
